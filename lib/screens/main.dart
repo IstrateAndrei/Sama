@@ -1,8 +1,8 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hello_world/screens/home.dart';
-import 'package:hello_world/screens/splash/splash_screen.dart';
+import 'package:sama/screens/home.dart';
+import 'package:sama/screens/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
