@@ -23,8 +23,10 @@ class Main extends StatelessWidget {
     return MaterialApp(
         title: 'Freedom',
         theme: ThemeData(
-            primarySwatch: Colors.orange,
-            secondaryHeaderColor: Colors.green,
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              secondary: Colors.deepOrangeAccent,
+              primary: Colors.purple,
+            ),
             fontFamily: 'roboto'),
         home: Scaffold(
           body: FutureBuilder<SharedPreferences>(

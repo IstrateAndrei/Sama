@@ -77,45 +77,37 @@ class _HomeScreenState extends State<HomeScreen> {
     //   children: [logo],
     // );
 
-    Positioned newGameButton =
-        Positioned(top: sizeY/2,
-          width: sizeX - sizeX/10,
-          height: sizeY - sizeY/10,
-          left: sizeX/10,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 12,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)
-              ),
-            ), onPressed: () {
-
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return PlayDetailsScreen();
-              }));
-          },
-            child: Text('New Game!'),
-          ),);
-
-
-    Positioned howToPlayButton =
-    Positioned(top: sizeY/2,
-      width: sizeX - sizeX/10,
-      height: sizeY - sizeY/10,
-      left: sizeX/10,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 12,
-          shape: RoundedRectangleBorder(
+    ElevatedButton newGameButton =
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 12,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8)
-          ),
-        ), onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return HowToPlayScreen();
-        }));
-      },
-        child: Text('How to play?'),
-      ),);
+            ),
+          ), onPressed: () {
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return PlayDetailsScreen();
+            }));
+        },
+          child: Text('New Game!'),
+        );
+
+
+    ElevatedButton howToPlayButton =
+    ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 12,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8)
+        ),
+      ), onPressed: () {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HowToPlayScreen();
+      }));
+    },
+      child: Text('How to play?'),
+    );
 
     list.add(title);
     list.add(logo);

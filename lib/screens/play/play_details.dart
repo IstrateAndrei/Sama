@@ -1,9 +1,8 @@
-
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-
-import '../../shared/menu_bottom_nav_bar.dart';
+import 'package:sama/data/Models/Game.dart';
+import 'package:sama/screens/play/pick_location.dart';
 
 class PlayDetailsScreen extends StatefulWidget {
   const PlayDetailsScreen({Key? key}) : super(key: key);
@@ -13,15 +12,218 @@ class PlayDetailsScreen extends StatefulWidget {
 }
 
 class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
+  int _playerIndex = 4;
+  int _spyIndex = 1;
+  int _timeIndex = 10;
+
+  bool isTotalShitShow = false;
+
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Play Details'),
+        appBar: AppBar(
+          title: Text('Play Details'),
+        ),
+        body: ListView(
+          padding: EdgeInsets.all(8.0),
+          children: getItems(context, width, height),
+        ));
+  }
+
+  List<Widget> getItems(BuildContext context, double width, double height) {
+    List<Widget> list = [];
+
+    GameModel model = GameModel();
+
+    Widget players = Container(
+      padding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text('Players: '),
+          IconButton(
+              onPressed: () {
+                if (_playerIndex > 0) {
+                  setState(() {
+                    _playerIndex -= 1;
+                  });
+                }
+              },
+              icon: Icon(Icons.remove_circle_outline)),
+          Text(_playerIndex.toString()),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _playerIndex += 1;
+                });
+              },
+              icon: Icon(Icons.add_circle_outline))
+        ],
       ),
-      body: Center(
-        child: Text('Play Details'),
+    );
+
+    Widget spies = Visibility(
+      visible: !isTotalShitShow,
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        margin: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Spies: '),
+            IconButton(
+                onPressed: () {
+                  if (_spyIndex > 0) {
+                    setState(() {
+                      _spyIndex -= 1;
+                    });
+                  }
+                },
+                icon: Icon(Icons.remove_circle_outline)),
+            Text(_spyIndex.toString()),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _spyIndex += 1;
+                  });
+                },
+                icon: Icon(Icons.add_circle_outline))
+          ],
+        ),
+      ),
+    );
+
+    Widget time = Visibility(
+        visible: !isTotalShitShow,
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          margin: EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('Time: '),
+              IconButton(
+                  onPressed: () {
+                    if (_timeIndex > 0) {
+                      setState(() {
+                        _timeIndex -= 1;
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.remove_circle_outline)),
+              Text('$_timeIndex min'),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _timeIndex += 1;
+                    });
+                  },
+                  icon: Icon(Icons.add_circle_outline))
+            ],
+          ),
+        ));
+
+    Widget shitShow = CheckboxListTile(
+        title: Text('Total shit show!', style: TextStyle(fontSize: 20, fontFamily: 'roboto'),),
+        value: isTotalShitShow,
+        controlAffinity: ListTileControlAffinity.leading,
+        onChanged: (newValue) {
+          if (newValue != null) {
+            setState(() {
+              isTotalShitShow = newValue;
+            });
+          }
+        });
+
+    Widget nextButton = Container(
+      padding: EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(32.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 12,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            model.playerCount = _playerIndex;
+            model.spyCount = _spyIndex;
+            model.timeCount = _timeIndex;
+            model.isShitShow = isTotalShitShow;
+
+            return PickLocationScreen();
+          },
+          settings: RouteSettings(
+            arguments: model,
+          )));
+        },
+        child: Text('Next'),
+      ),
+    );
+
+    list.add(players);
+    list.add(spies);
+    list.add(time);
+    list.add(shitShow);
+    list.add(nextButton);
+    return list;
+  }
+
+  ListTile getPlayersRow(BuildContext context, double width, double height) {
+    return ListTile(
+      leading: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Players: '),
+            IconButton(
+                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
+            Text('5'),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
+          ],
+        ),
       ),
     );
   }
+
+  Widget getSpiesRow(BuildContext context, double width, double height) {
+    return ListTile(
+      leading: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Spies'),
+            IconButton(
+                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
+            Text('2'),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getTimeRow(BuildContext context, double width, double height) {
+    return ListTile(
+      leading: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Time'),
+            IconButton(
+                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
+            Text('10 MIN'),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
+          ],
+        ),
+      ),
+    );
+  }
+
 }
