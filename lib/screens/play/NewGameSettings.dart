@@ -2,16 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:sama/data/Models/Game.dart';
-import 'package:sama/screens/play/pick_location.dart';
+import 'package:sama/screens/play/PickLocation.dart';
+import 'package:sama/util/Utils.dart';
 
-class PlayDetailsScreen extends StatefulWidget {
-  const PlayDetailsScreen({Key? key}) : super(key: key);
+class NewGameSettingsScreen extends StatefulWidget {
+  const NewGameSettingsScreen({Key? key}) : super(key: key);
 
   @override
-  State<PlayDetailsScreen> createState() => _PlayDetailsScreenState();
+  State<NewGameSettingsScreen> createState() => _NewGameSettingsScreenState();
 }
 
-class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
+class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
   int _playerIndex = 4;
   int _spyIndex = 1;
   int _timeIndex = 10;
@@ -25,7 +26,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Play Details'),
+          title: Text(
+            'Game Settings',
+            style: getTitleTextStyle(),
+          ),
         ),
         body: ListView(
           padding: EdgeInsets.all(8.0),
@@ -44,7 +48,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text('Players: '),
+          Text(
+            'Players: ',
+            style: getSubtitleTextStyle(),
+          ),
           IconButton(
               onPressed: () {
                 if (_playerIndex > 0) {
@@ -54,7 +61,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
                 }
               },
               icon: Icon(Icons.remove_circle_outline)),
-          Text(_playerIndex.toString()),
+          Text(
+            _playerIndex.toString(),
+            style: getSubtitleTextStyle(),
+          ),
           IconButton(
               onPressed: () {
                 setState(() {
@@ -74,7 +84,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Spies: '),
+            Text(
+              'Spies: ',
+              style: getSubtitleTextStyle(),
+            ),
             IconButton(
                 onPressed: () {
                   if (_spyIndex > 0) {
@@ -84,7 +97,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
                   }
                 },
                 icon: Icon(Icons.remove_circle_outline)),
-            Text(_spyIndex.toString()),
+            Text(
+              _spyIndex.toString(),
+              style: getSubtitleTextStyle(),
+            ),
             IconButton(
                 onPressed: () {
                   setState(() {
@@ -105,7 +121,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('Time: '),
+              Text(
+                'Time: ',
+                style: getSubtitleTextStyle(),
+              ),
               IconButton(
                   onPressed: () {
                     if (_timeIndex > 0) {
@@ -115,7 +134,10 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
                     }
                   },
                   icon: Icon(Icons.remove_circle_outline)),
-              Text('$_timeIndex min'),
+              Text(
+                '$_timeIndex min',
+                style: getSubtitleTextStyle(),
+              ),
               IconButton(
                   onPressed: () {
                     setState(() {
@@ -127,40 +149,43 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
           ),
         ));
 
-    Widget shitShow = CheckboxListTile(
-        title: Text('Total shit show!', style: TextStyle(fontSize: 20, fontFamily: 'roboto'),),
-        value: isTotalShitShow,
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (newValue) {
-          if (newValue != null) {
-            setState(() {
-              isTotalShitShow = newValue;
-            });
-          }
-        });
+    Widget shitShow = Center(
+        child: CheckboxListTile(
+            title: Text(
+              'Total shit show!',
+              style: getTitleTextStyle(),
+            ),
+            value: isTotalShitShow,
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (newValue) {
+              if (newValue != null) {
+                setState(() {
+                  isTotalShitShow = newValue;
+                });
+              }
+            }));
 
     Widget nextButton = Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(32.0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 12,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
+        style: getElevatedButtonStyle(),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            model.playerCount = _playerIndex;
-            model.spyCount = _spyIndex;
-            model.timeCount = _timeIndex;
-            model.isShitShow = isTotalShitShow;
-
-            return PickLocationScreen();
-          },
-          settings: RouteSettings(
-            arguments: model,
-          )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) {
+                    model.playerCount = _playerIndex;
+                    model.spyCount = _spyIndex;
+                    model.timeCount = _timeIndex;
+                    model.isShitShow = isTotalShitShow;
+                    return PickLocationScreen();
+                  },
+                  settings: RouteSettings(
+                    arguments: model,
+                  )));
         },
-        child: Text('Next'),
+        child: getElevationButtonChild('NEXT'),
       ),
     );
 
@@ -171,59 +196,4 @@ class _PlayDetailsScreenState extends State<PlayDetailsScreen> {
     list.add(nextButton);
     return list;
   }
-
-  ListTile getPlayersRow(BuildContext context, double width, double height) {
-    return ListTile(
-      leading: Container(
-        margin: EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Players: '),
-            IconButton(
-                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
-            Text('5'),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getSpiesRow(BuildContext context, double width, double height) {
-    return ListTile(
-      leading: Container(
-        margin: EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Spies'),
-            IconButton(
-                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
-            Text('2'),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getTimeRow(BuildContext context, double width, double height) {
-    return ListTile(
-      leading: Container(
-        margin: EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Time'),
-            IconButton(
-                onPressed: () {}, icon: Icon(Icons.remove_circle_outline)),
-            Text('10 MIN'),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
-          ],
-        ),
-      ),
-    );
-  }
-
 }

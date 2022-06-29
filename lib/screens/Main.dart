@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:sama/screens/home.dart';
+import 'package:sama/screens/Home.dart';
 import 'package:sama/screens/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +23,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
         title: 'Freedom',
         theme: ThemeData(
+            scaffoldBackgroundColor: Color(0xffffffff) ,
             colorScheme: ColorScheme.fromSwatch().copyWith(
               secondary: Colors.deepOrangeAccent,
               primary: Colors.purple,

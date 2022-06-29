@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:sama/screens/home.dart';
-import 'package:sama/screens/play/play_details.dart';
-import 'package:sama/screens/settings.dart';
+import 'package:sama/screens/Home.dart';
+import 'package:sama/screens/play/NewGameSettings.dart';
+import 'package:sama/screens/Settings.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -64,7 +64,7 @@ class _BottomBarState extends State<BottomBar> {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       switch (menuItemIndex) {
         case 0:
-          return PlayDetailsScreen();
+          return NewGameSettingsScreen();
         case 1:
           return SettingsScreen();
 

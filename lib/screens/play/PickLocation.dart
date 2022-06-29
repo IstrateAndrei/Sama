@@ -1,12 +1,14 @@
 // ignore_for_file: prefer_const_constructors, no_logic_in_create_state
 
 import 'package:flutter/material.dart';
-import 'package:sama/screens/play/show_location.dart';
+import 'package:sama/data/Models/LocationBundle.dart';
+import 'package:sama/screens/play/RoleDisplay.dart';
+import 'package:sama/util/Utils.dart';
 
 import '../../data/Models/Game.dart';
+import '../../util/LocationGenerator.dart';
 
 class PickLocationScreen extends StatefulWidget {
-
   const PickLocationScreen({Key? key}) : super(key: key);
 
   @override
@@ -14,7 +16,7 @@ class PickLocationScreen extends StatefulWidget {
 }
 
 class _PickLocationScreenState extends State<PickLocationScreen> {
-  Locs location = Locs.basic;
+  Locs bundle = Locs.basic;
 
   @override
   Widget build(BuildContext context) {
@@ -25,38 +27,48 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick Location'),
+        title: Text(
+          'Pick Location',
+          style: getTitleTextStyle(),
+        ),
       ),
       body: getScreen(context, width, height, game),
     );
   }
 
-  Widget getScreen(BuildContext context, double width, double height, GameModel game) {
+  Widget getScreen(
+      BuildContext context, double width, double height, GameModel game) {
     return Column(
       children: <Widget>[
         ListTile(
-          title: const Text('Basic Locations Bundle (23)'),
+          title: Text(
+            'Basic Locations Bundle (${getBasicLocations().length})',
+            style: getMessageTextStyle(),
+          ),
           leading: Radio<Locs>(
             value: Locs.basic,
-            groupValue: location,
+            groupValue: bundle,
             onChanged: (Locs? value) {
               if (value != null) {
                 setState(() {
-                  location = value;
+                  bundle = value;
                 });
               }
             },
           ),
         ),
         ListTile(
-          title: const Text('Extra Locations pack (12)'),
+          title: Text(
+            'Extra Locations pack (${getExtraLocations().length})',
+            style: getMessageTextStyle(),
+          ),
           leading: Radio<Locs>(
             value: Locs.extras,
-            groupValue: location,
+            groupValue: bundle,
             onChanged: (Locs? value) {
               if (value != null) {
                 setState(() {
-                  location = value;
+                  bundle = value;
                 });
               }
             },
@@ -64,30 +76,35 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
         ),
         SizedBox(
           width: width,
-          height: height / 1.5,
+          height: height / 1.6,
         ),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
               elevation: 5,
             ),
             onPressed: () {
-
               //pick random location from selected location pack.
               //update the game object with a location and a location Id.
-              game.locName = 'Selected Location';
-              game.locationId = 12;
+              LocationBundle locBundle = LocationBundle();
+              locBundle.bundle = bundle;
+              locBundle.locations = getLocations(bundle);
 
+              game.locBundle = locBundle;
 
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ShowLocationScreen();
-              },
-              settings: RouteSettings(
-                arguments: game
-              )));
-            }, child: Text('Start Game!'))
+              game.location = getRandomLocation(bundle);
+
+              //handle player, spy, and time values
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) {
+                        return RoleDisplayScreen();
+                      },
+                      settings: RouteSettings(arguments: game)));
+            },
+            child: getElevationButtonChild("Start Game!"))
       ],
     );
   }
 }
-
-enum Locs { basic, extras }
