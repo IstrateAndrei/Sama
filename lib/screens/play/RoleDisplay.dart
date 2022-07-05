@@ -153,6 +153,7 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
             backgroundImage: AssetImage('assets/logo.jpg'),
             backgroundColor: Colors.transparent,
           ),
+          // Image(image: AssetImage('assets/sama_full.png')),
           SizedBox(
             height: height / 30,
           ),

@@ -18,35 +18,43 @@ class Main extends StatelessWidget {
     return SharedPreferences.getInstance();
   }
 
+
+  //Main color Red malt - 0xFFD2302C
+  //Main white shade - 0xFFF7F7F9
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Freedom',
         theme: ThemeData(
-            scaffoldBackgroundColor: Color(0xffffffff) ,
+            scaffoldBackgroundColor: Color(0xFFF7F7F9),
             colorScheme: ColorScheme.fromSwatch().copyWith(
-              secondary: Colors.deepOrangeAccent,
-              primary: Colors.purple,
+              secondary: Color(0xFFF7F7F9),
+              primary: Color(0xFFD2302C),
             ),
-            fontFamily: 'roboto'),
+            fontFamily: 'badabb'),
         home: Scaffold(
-          body: FutureBuilder<SharedPreferences>(
-            future: getPrefs(),
-            builder: (BuildContext context,
-                AsyncSnapshot<SharedPreferences> snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data?.getBool('not_first_time') == true) {
-                  return HomeScreen();
-                } else {
-                  snapshot.data?.setBool('not_first_time', true);
-                  return SplashScreen();
-                }
-              } else {
-                snapshot.data?.setBool('not_first_time', true);
-                return SplashScreen();
-              }
-            },
-          ),
+            body: HomeScreen()
         ));
+  }
+
+
+  Widget getFutureBuilder() {
+    return FutureBuilder<SharedPreferences>(
+      future: getPrefs(),
+      builder: (BuildContext context,
+          AsyncSnapshot<SharedPreferences> snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data?.getBool('not_first_time') == true) {
+            return HomeScreen();
+          } else {
+            snapshot.data?.setBool('not_first_time', true);
+            return SplashScreen();
+          }
+        } else {
+          snapshot.data?.setBool('not_first_time', true);
+          return SplashScreen();
+        }
+      },
+    );
   }
 }

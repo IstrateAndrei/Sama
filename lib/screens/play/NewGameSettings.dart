@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sama/data/Models/Game.dart';
 import 'package:sama/screens/play/PickLocation.dart';
 import 'package:sama/util/Utils.dart';
@@ -17,7 +18,7 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
   int _spyIndex = 1;
   int _timeIndex = 10;
 
-  bool isTotalShitShow = false;
+  bool _isTotalShitShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,7 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
     );
 
     Widget spies = Visibility(
-      visible: !isTotalShitShow,
+      visible: !_isTotalShitShow,
       child: Container(
         padding: EdgeInsets.all(8.0),
         margin: EdgeInsets.all(8.0),
@@ -114,7 +115,7 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
     );
 
     Widget time = Visibility(
-        visible: !isTotalShitShow,
+        visible: !_isTotalShitShow,
         child: Container(
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(8.0),
@@ -149,21 +150,29 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
           ),
         ));
 
-    Widget shitShow = Center(
-        child: CheckboxListTile(
-            title: Text(
-              'Total shit show!',
-              style: getTitleTextStyle(),
-            ),
-            value: isTotalShitShow,
-            controlAffinity: ListTileControlAffinity.leading,
-            onChanged: (newValue) {
-              if (newValue != null) {
+
+    Widget shitShow = Container(
+      padding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text('Total shitshow!', style: getShitShowTextStyle(),),
+          FlutterSwitch(
+              value: _isTotalShitShow,
+              showOnOff: true,
+              activeColor: Color(0xFFD2302C),
+              inactiveColor: Colors.blueGrey.shade500,
+              activeTextColor: Color(0xFFF7F7F9),
+              inactiveTextColor: Colors.grey,
+              onToggle: (value) {
                 setState(() {
-                  isTotalShitShow = newValue;
+                  _isTotalShitShow = value;
                 });
-              }
-            }));
+              })
+        ],
+      ),
+    );
 
     Widget nextButton = Container(
       padding: EdgeInsets.all(16.0),
@@ -178,7 +187,7 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
                     model.playerCount = _playerIndex;
                     model.spyCount = _spyIndex;
                     model.timeCount = _timeIndex;
-                    model.isShitShow = isTotalShitShow;
+                    model.isShitShow = _isTotalShitShow;
                     return PickLocationScreen();
                   },
                   settings: RouteSettings(
