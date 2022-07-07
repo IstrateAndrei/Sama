@@ -21,7 +21,7 @@ TextStyle getSubtitleTextStyle() {
       color: Color(0xFF212121),
       fontFamily: 'badabb',
       fontWeight: FontWeight.w400,
-      fontSize: 24);
+      fontSize: 30);
 }
 
 TextStyle getShitShowTextStyle() {
@@ -29,7 +29,7 @@ TextStyle getShitShowTextStyle() {
       color: Color(0xFFD2302C),
       fontFamily: 'badabb',
       fontWeight: FontWeight.w400,
-      fontSize: 30);
+      fontSize: 36);
 }
 
 TextStyle getButtonTextStyle() {
@@ -50,34 +50,39 @@ TextStyle getMessageTextStyle() {
 
 Widget getElevationButtonChild(String text) {
   return Container(
-    padding: EdgeInsets.all(8.0),
-    child: Text(text, style: getButtonTextStyle(),),
+    padding: EdgeInsets.all(2.0),
+    child: Text(
+      text,
+      style: getButtonTextStyle(),
+    ),
   );
 }
 
-Widget getElevationButtonAnimatedChild(String text, double width, double height, int duration) {
+Widget getElevationButtonAnimatedChild(
+    String text, double width, double height, int duration) {
   return AnimatedContainer(
     width: width,
     height: height,
     padding: EdgeInsets.all(8.0),
     duration: Duration(seconds: duration),
-    child: Text(text, style: getButtonTextStyle(),),
+    child: Text(
+      text,
+      style: getButtonTextStyle(),
+    ),
   );
 }
 
-ButtonStyle getElevatedButtonStyle(){
+ButtonStyle getElevatedButtonStyle() {
   return ElevatedButton.styleFrom(
     elevation: 12,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   );
 }
 
-Gradient getBackgroundRadialGradient(){
+Gradient getBackgroundRadialGradient() {
   return RadialGradient(
-    // colors: [Colors.purple.shade100, Colors.purple.shade50, Colors.deepOrangeAccent.shade100, Colors.deepOrangeAccent.shade200],
-    colors: [Colors.white, Colors.redAccent.shade100],
-    center: Alignment.center,
-    radius: 2
-  );
+      // colors: [Colors.purple.shade100, Colors.purple.shade50, Colors.deepOrangeAccent.shade100, Colors.deepOrangeAccent.shade200],
+      colors: [Colors.white, Colors.white, Colors.redAccent.shade100],
+      center: Alignment.center,
+      radius: 1.2);
 }
-

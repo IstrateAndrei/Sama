@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sama/data/Models/Game.dart';
@@ -150,6 +152,17 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
           ),
         ));
 
+    Widget shitShowDescription = Visibility(
+        visible: _isTotalShitShow,
+        child: Container(
+          margin: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'Nobody knows how many spies are among the group.\n\nAlso you don\'t know how much time you\'ve got.\n\nHave fun!',
+            textAlign: TextAlign.center,
+            style: getMessageTextStyle(),
+          ),
+        ));
 
     Widget shitShow = Container(
       padding: EdgeInsets.all(8.0),
@@ -157,7 +170,10 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text('Total shitshow!', style: getShitShowTextStyle(),),
+          Text(
+            'Total shitshow!',
+            style: getShitShowTextStyle(),
+          ),
           FlutterSwitch(
               value: _isTotalShitShow,
               showOnOff: true,
@@ -185,9 +201,16 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
               MaterialPageRoute(
                   builder: (context) {
                     model.playerCount = _playerIndex;
-                    model.spyCount = _spyIndex;
-                    model.timeCount = _timeIndex;
                     model.isShitShow = _isTotalShitShow;
+
+                    if (_isTotalShitShow) {
+                      model.spyCount = Random().nextInt(_playerIndex - 2);
+                      model.timeCount = Random().nextInt(20) + 10;
+                    } else {
+                      model.spyCount = _spyIndex;
+                      model.timeCount = _timeIndex;
+                    }
+
                     return PickLocationScreen();
                   },
                   settings: RouteSettings(
@@ -202,6 +225,7 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
     list.add(spies);
     list.add(time);
     list.add(shitShow);
+    list.add(shitShowDescription);
     list.add(nextButton);
     return list;
   }

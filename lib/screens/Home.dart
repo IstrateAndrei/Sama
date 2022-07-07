@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen>
   //maybe need later for the buttons
   late Animation _colorAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _buttonScaleAnimation;
   bool _isFirstRoundFinished = false;
 
   @override
@@ -41,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen>
       // TweenSequenceItem(tween: Tween(begin: 100, end: 70), weight: 50),
     ]).animate(CurvedAnimation(
         parent: _animationController, curve: Curves.easeInOutCirc));
+
+    // _buttonScaleAnimation = TweenSequence(<TweenSequenceItem<double>>[
+    //   TweenSequenceItem(tween: Tween(begin: 0, end: 100), weight: 10),
+    //   // TweenSequenceItem(tween: Tween(begin: 100, end: 70), weight: 50),
+    // ]).animate(CurvedAnimation(
+    //     parent: _animationController, curve: Curves.elasticInOut));
 
     _animationController.addListener(() {
       if (_scaleAnimation.value == 300 && !_isFirstRoundFinished) {
@@ -150,12 +157,11 @@ class _HomeScreenState extends State<HomeScreen>
         });
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         titleImage,
         logo2,
-        SizedBox(
-          height: height / 6,
-        ),
         newGameButton,
         SizedBox(
           height: 15,

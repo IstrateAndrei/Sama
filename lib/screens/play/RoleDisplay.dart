@@ -1,10 +1,11 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors
 
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sama/data/Models/Game.dart';
 import 'package:sama/screens/play/TimeDisplay.dart';
+import 'package:sama/util/CustomWidgets.dart';
 import 'package:sama/util/LocationGenerator.dart';
 import 'package:sama/util/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,12 +29,13 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
   bool _shouldHandDevice = true;
   bool _showStartDiscussion = false;
 
-  //generate spy position
+  bool _displayRoleButton = false;
 
   List<String> roles = [];
 
   List<String> establishRoles(GameModel game) {
     List<String> decidedRoles = [];
+
     for (int i = 0; i < game.spyCount; i++) {
       decidedRoles.add('Spy');
     }
@@ -41,7 +43,6 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
     while (decidedRoles.length < game.playerCount) {
       decidedRoles.add(getRandomElement(game.location!.roles));
     }
-    log(decidedRoles.toString());
 
     decidedRoles.shuffle();
     return decidedRoles;
@@ -100,7 +101,7 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
           ),
           CircleAvatar(
             radius: 80,
-            backgroundImage: AssetImage('assets/logo.jpg'),
+            backgroundImage: AssetImage('assets/images/megaphone#2.png'),
             backgroundColor: Colors.transparent,
           ),
           SizedBox(
@@ -114,8 +115,9 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
             height: 15,
           ),
           Text(
-            'Players now take turns asking each other questions about the secret location.\nThe game master starts by choosing one player to ask a question. After answering that player may select the next player to ask a question.',
+            'Players now take turns asking each other questions about the secret location.\nThe game master starts by choosing one player to ask a question. After answering that player may select the next player and so on...',
             style: getMessageTextStyle(),
+            textAlign: TextAlign.center,
           ),
           SizedBox(
             height: 15,
@@ -148,17 +150,19 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
           SizedBox(
             height: height / 30,
           ),
-          CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage('assets/logo.jpg'),
-            backgroundColor: Colors.transparent,
-          ),
+
+          Image(image: AssetImage('assets/sama_full.png')),
+          // CircleAvatar(
+          //   radius: 60,
+          //   backgroundImage: AssetImage('assets/logo.jpg'),
+          //   backgroundColor: Colors.transparent,
+          // ),
           // Image(image: AssetImage('assets/sama_full.png')),
           SizedBox(
             height: height / 30,
           ),
           Text(
-            'Player ${_playerCounter + 1} is the game master',
+            'First player is the game master',
             textAlign: TextAlign.center,
             style: getSubtitleTextStyle(),
           ),
@@ -188,7 +192,7 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
                   _isRuleRead = true;
                 });
               },
-              child: getElevationButtonChild('Ready'))
+              child: getElevationButtonChild('Ready?!'))
         ],
       ),
     );
@@ -202,10 +206,12 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
         SizedBox(
           height: height / 10,
         ),
-        CircleAvatar(
-          radius: 80,
-          backgroundImage: AssetImage('assets/logo.jpg'),
-          backgroundColor: Colors.transparent,
+        TapIconImage(
+          showBtn: (value) {
+            setState(() {
+              _displayRoleButton = value;
+            });
+          },
         ),
         SizedBox(
           height: height / 20,
@@ -218,20 +224,27 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
           height: height / 20,
         ),
         Text(
-          'Hand the device to this player.\nTap on the image when ready!',
+          _displayRoleButton
+              ? 'Make sure nobody sees your screen\ntap the button when ready!'
+              : 'Hand the device to this player.\nTap on the image when ready!',
           style: getMessageTextStyle(),
+          textAlign: TextAlign.center,
         ),
         SizedBox(
           height: height / 20,
         ),
-        ElevatedButton(
-            style: getElevatedButtonStyle(),
-            onPressed: () {
-              setState(() {
-                _shouldHandDevice = false;
-              });
-            },
-            child: getElevationButtonChild('Show Role')),
+        Visibility(
+          visible: _displayRoleButton,
+          child: ElevatedButton(
+              style: getElevatedButtonStyle(),
+              onPressed: () {
+                setState(() {
+                  _shouldHandDevice = false;
+                  _displayRoleButton = false;
+                });
+              },
+              child: getElevationButtonChild('Show Role')),
+        )
       ],
     );
   }
@@ -241,23 +254,38 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(color: Color(0x55212121)),
+      decoration: BoxDecoration(
+        gradient: getBackgroundRadialGradient(),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: height / 10,
-          ),
-          SizedBox(
             height: height / 20,
           ),
+          Visibility(
+              visible: !(roles[_playerCounter] == 'Spy'),
+              child: Image(
+                height: height / 7,
+                width: width / 7,
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/location_pin.png'),
+              )),
           getLocationWidget(roles[_playerCounter], game.location!.locationName),
           SizedBox(
             height: 10,
           ),
           getRoleWidget(roles[_playerCounter]),
           SizedBox(
-            height: height / 6,
+            height: 10,
+          ),
+          Visibility(
+              visible: roles[_playerCounter] == 'Spy',
+              child: Image(
+                image: AssetImage('assets/sama_320.gif'),
+              )),
+          SizedBox(
+            height: 10,
           ),
           ElevatedButton(
             style: getElevatedButtonStyle(),
@@ -271,7 +299,7 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
                 }
               });
             },
-            child: getElevationButtonChild('OK'),
+            child: getElevationButtonChild('GOT IT!'),
           )
         ],
       ),
@@ -280,10 +308,15 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
 
   Widget getLocationWidget(String role, String location) {
     if (role == 'Spy') {
-      return Text(
-        'SAMA!\nYou are the Spy!',
-        textAlign: TextAlign.center,
-        style: getSubtitleTextStyle(),
+      return Column(
+        children: [
+          Image(image: AssetImage('assets/sama_full.png')),
+          Text(
+            'You are the Spy!',
+            textAlign: TextAlign.center,
+            style: getSubtitleTextStyle(),
+          ),
+        ],
       );
     } else {
       return Text(
@@ -297,11 +330,13 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
     if (role == 'Spy') {
       return Text(
         'Blend in and figure out the location!',
+        textAlign: TextAlign.center,
         style: getMessageTextStyle(),
       );
     } else {
       return Text(
         'Role: $role',
+        textAlign: TextAlign.center,
         style: getMessageTextStyle(),
       );
     }

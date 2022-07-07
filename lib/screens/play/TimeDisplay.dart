@@ -39,7 +39,7 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
 
   // Step 6
   void setCountDown() {
-    final reduceSecondsBy = 1;
+    const reduceSecondsBy = 1;
     setState(() {
       _isTimeStarted = true;
       final seconds = myDuration!.inSeconds - reduceSecondsBy;
@@ -84,41 +84,35 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
     Widget startTime = Visibility(
         visible: !_isTimeStarted,
         child: ElevatedButton(
+            style: getElevatedButtonStyle(),
             onPressed: () {
               //finish discussion -> move to voting screen
               startTimer();
             },
             child: Container(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Start Timer'.toUpperCase(),
-                style: getSubtitleTextStyle(),
-              ),
-            )));
+                padding: EdgeInsets.all(8.0),
+                child: getElevationButtonChild('Start Timer'))));
 
     Widget endDiscussion = Visibility(
         visible: _isTimeStarted,
         child: ElevatedButton(
+            style: getElevatedButtonStyle(),
             onPressed: () {
               //finish discussion -> move to voting screen
               stopTimer();
             },
             child: Container(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'End Discussion'.toUpperCase(),
-                style: getSubtitleTextStyle(),
-              ),
-            )));
+                padding: EdgeInsets.all(8.0),
+                child: getElevationButtonChild('End Discussion'))));
 
     return Column(
       children: [
         SizedBox(
-          height: 10,
+          height: height / 4,
         ),
         CircleAvatar(
           radius: 80,
-          backgroundImage: AssetImage('assets/logo.jpg'),
+          backgroundImage: AssetImage('assets/images/hourglass.png'),
           backgroundColor: Colors.transparent,
         ),
         SizedBox(
