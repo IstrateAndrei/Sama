@@ -39,11 +39,22 @@ dependencies:
   shared_preferences: ^2.0.15
   flutter_switch: ^0.3.2
 
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.2.0
   build_runner: ^2.1.11
+  flutter_launcher_icons: ^0.9.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/sama_ic.png"
+  adaptive_icon_foreground: "assets/sama_ic_foreground.png"
+  adaptive_icon_background: "assets/sama_ic_background.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

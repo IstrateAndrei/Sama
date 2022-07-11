@@ -40,6 +40,14 @@ TextStyle getButtonTextStyle() {
       fontSize: 24);
 }
 
+TextStyle getSnackMessageTextStyle() {
+  return const TextStyle(
+      color: Color(0xFFFFFFFF),
+      fontFamily: 'badabb',
+      fontWeight: FontWeight.w300,
+      fontSize: 20);
+}
+
 TextStyle getMessageTextStyle() {
   return const TextStyle(
       color: Color(0xFF757575),

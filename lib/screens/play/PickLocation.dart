@@ -79,9 +79,7 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
           height: height / 1.6,
         ),
         ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 5,
-            ),
+            style: getElevatedButtonStyle(),
             onPressed: () {
               //pick random location from selected location pack.
               //update the game object with a location and a location Id.

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../screens/Settings.dart';
+import '../screens/main/Settings.dart';
 
 Widget getSettingsButton(BuildContext context) {
   return IconButton(

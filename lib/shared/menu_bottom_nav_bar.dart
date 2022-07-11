@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:sama/screens/Home.dart';
+import 'package:sama/screens/main/Home.dart';
 import 'package:sama/screens/play/NewGameSettings.dart';
-import 'package:sama/screens/Settings.dart';
+import 'package:sama/screens/main/Settings.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);

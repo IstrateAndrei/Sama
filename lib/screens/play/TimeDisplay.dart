@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sama/data/Models/Game.dart';
+import 'package:sama/screens/play/Conclusion.dart';
 import 'package:sama/util/Utils.dart';
 
 class TimeDisplayScreen extends StatefulWidget {
@@ -18,12 +19,13 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
   Duration? myDuration;
 
   bool _isTimeStarted = false;
+  bool _wasPausedPressed = false;
 
   /// Timer related methods ///
   // Step 3
-  void startTimer() {
-    countdownTimer =
-        Timer.periodic(Duration(seconds: 1), (_) => setCountDown());
+  void startTimer(BuildContext context, GameModel gameModel) {
+    countdownTimer = Timer.periodic(
+        Duration(seconds: 1), (_) => setCountDown(context, gameModel));
   }
 
   // Step 4
@@ -38,13 +40,21 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
   }
 
   // Step 6
-  void setCountDown() {
+  void setCountDown(BuildContext context, GameModel game) {
     const reduceSecondsBy = 1;
     setState(() {
       _isTimeStarted = true;
       final seconds = myDuration!.inSeconds - reduceSecondsBy;
       if (seconds < 0) {
         countdownTimer!.cancel();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return ConclusionScreen();
+                },
+                settings: RouteSettings(arguments: game)),
+            (Route<dynamic> route) => false);
       } else {
         myDuration = Duration(seconds: seconds);
       }
@@ -87,11 +97,26 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
             style: getElevatedButtonStyle(),
             onPressed: () {
               //finish discussion -> move to voting screen
-              startTimer();
+              startTimer(context, game);
             },
             child: Container(
                 padding: EdgeInsets.all(8.0),
-                child: getElevationButtonChild('Start Timer'))));
+                child: getElevationButtonChild(
+                    !_wasPausedPressed ? 'Start Timer' : 'Resume Timer'))));
+
+    Widget pauseTime = Visibility(
+        visible: _isTimeStarted,
+        child: ElevatedButton(
+            style: getElevatedButtonStyle(),
+            onPressed: () {
+              //finish discussion -> move to voting screen
+              _isTimeStarted = false;
+              _wasPausedPressed = true;
+              stopTimer();
+            },
+            child: Container(
+                padding: EdgeInsets.all(8.0),
+                child: getElevationButtonChild('Pause Timer'))));
 
     Widget endDiscussion = Visibility(
         visible: _isTimeStarted,
@@ -100,6 +125,17 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
             onPressed: () {
               //finish discussion -> move to voting screen
               stopTimer();
+              //move to voting screen - todo to implement
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) {
+                        return ConclusionScreen();
+                      },
+                      settings: RouteSettings(arguments: game)),
+                  (Route<dynamic> route) {
+                return false;
+              });
             },
             child: Container(
                 padding: EdgeInsets.all(8.0),
@@ -126,6 +162,7 @@ class _TimeDisplayScreenState extends State<TimeDisplayScreen> {
           height: 10,
         ),
         startTime,
+        pauseTime,
         SizedBox(
           height: 15,
         ),

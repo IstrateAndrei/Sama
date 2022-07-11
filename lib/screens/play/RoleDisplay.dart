@@ -10,6 +10,8 @@ import 'package:sama/util/LocationGenerator.dart';
 import 'package:sama/util/Utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../data/Models/Role.dart';
+
 class RoleDisplayScreen extends StatefulWidget {
   RoleDisplayScreen({Key? key}) : super(key: key);
 
@@ -34,18 +36,21 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
   List<String> roles = [];
 
   List<String> establishRoles(GameModel game) {
-    List<String> decidedRoles = [];
+    List<Role> decidedRoles = [];
 
     for (int i = 0; i < game.spyCount; i++) {
-      decidedRoles.add('Spy');
+      decidedRoles.add(Role(title: 'Spy', isUnique: false));
     }
 
     while (decidedRoles.length < game.playerCount) {
-      decidedRoles.add(getRandomElement(game.location!.roles));
+      Role role = getRandomElement(game.location!.roles);
+      if (!decidedRoles.contains(role) || !role.isUnique) {
+        decidedRoles.add(role);
+      }
     }
 
     decidedRoles.shuffle();
-    return decidedRoles;
+    return decidedRoles.map((e) => e.title).toList();
   }
 
   @override
@@ -62,7 +67,11 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Player ${_playerCounter + 1}',
+          !_isRuleRead
+              ? 'Game Rules'
+              : _showStartDiscussion
+                  ? 'Discussion'
+                  : 'Player ${_playerCounter + 1}',
           style: getTitleTextStyle(),
         ),
       ),
@@ -99,11 +108,10 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
           SizedBox(
             height: 10,
           ),
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: AssetImage('assets/images/megaphone#2.png'),
-            backgroundColor: Colors.transparent,
-          ),
+          Image(
+              height: height / 4,
+              width: width / 2,
+              image: AssetImage('assets/images/megaphone#2.png')),
           SizedBox(
             height: 10,
           ),
@@ -150,14 +158,10 @@ class _RoleDisplayScreenState extends State<RoleDisplayScreen> {
           SizedBox(
             height: height / 30,
           ),
-
-          Image(image: AssetImage('assets/sama_full.png')),
-          // CircleAvatar(
-          //   radius: 60,
-          //   backgroundImage: AssetImage('assets/logo.jpg'),
-          //   backgroundColor: Colors.transparent,
-          // ),
-          // Image(image: AssetImage('assets/sama_full.png')),
+          Image(
+              height: height / 10,
+              width: width,
+              image: AssetImage('assets/sama_full.png')),
           SizedBox(
             height: height / 30,
           ),

@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sama/data/Models/Game.dart';
 import 'package:sama/screens/play/PickLocation.dart';
+import 'package:sama/screens/play/RoleDisplay.dart';
 import 'package:sama/util/Utils.dart';
+
+import '../../data/Models/LocationBundle.dart';
+import '../../util/LocationGenerator.dart';
 
 class NewGameSettingsScreen extends StatefulWidget {
   const NewGameSettingsScreen({Key? key}) : super(key: key);
@@ -34,8 +38,8 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
             style: getTitleTextStyle(),
           ),
         ),
-        body: ListView(
-          padding: EdgeInsets.all(8.0),
+        body: Column(
+          // padding: EdgeInsets.all(8.0),
           children: getItems(context, width, height),
         ));
   }
@@ -57,10 +61,16 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
           ),
           IconButton(
               onPressed: () {
-                if (_playerIndex > 0) {
+                if (_playerIndex > 3) {
                   setState(() {
                     _playerIndex -= 1;
                   });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                    'At least 3 players are required!',
+                    style: getSnackMessageTextStyle(),
+                  )));
                 }
               },
               icon: Icon(Icons.remove_circle_outline)),
@@ -93,10 +103,16 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
             ),
             IconButton(
                 onPressed: () {
-                  if (_spyIndex > 0) {
+                  if (_spyIndex > 1) {
                     setState(() {
                       _spyIndex -= 1;
                     });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                      'No spy, no fun  : ( ',
+                      style: getSnackMessageTextStyle(),
+                    )));
                   }
                 },
                 icon: Icon(Icons.remove_circle_outline)),
@@ -106,9 +122,17 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
             ),
             IconButton(
                 onPressed: () {
-                  setState(() {
-                    _spyIndex += 1;
-                  });
+                  if (_spyIndex < _playerIndex - 1) {
+                    setState(() {
+                      _spyIndex += 1;
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                      'We can\'t all be spies!',
+                      style: getSnackMessageTextStyle(),
+                    )));
+                  }
                 },
                 icon: Icon(Icons.add_circle_outline))
           ],
@@ -130,10 +154,16 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
               ),
               IconButton(
                   onPressed: () {
-                    if (_timeIndex > 0) {
+                    if (_timeIndex > 10) {
                       setState(() {
                         _timeIndex -= 1;
                       });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                        'Minimum time limit reached!',
+                        style: getSnackMessageTextStyle(),
+                      )));
                     }
                   },
                   icon: Icon(Icons.remove_circle_outline)),
@@ -155,8 +185,8 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
     Widget shitShowDescription = Visibility(
         visible: _isTotalShitShow,
         child: Container(
-          margin: EdgeInsets.all(16.0),
-          padding: EdgeInsets.all(16.0),
+          margin: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Text(
             'Nobody knows how many spies are among the group.\n\nAlso you don\'t know how much time you\'ve got.\n\nHave fun!',
             textAlign: TextAlign.center,
@@ -191,8 +221,6 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
     );
 
     Widget nextButton = Container(
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.all(32.0),
       child: ElevatedButton(
         style: getElevatedButtonStyle(),
         onPressed: () {
@@ -204,28 +232,55 @@ class _NewGameSettingsScreenState extends State<NewGameSettingsScreen> {
                     model.isShitShow = _isTotalShitShow;
 
                     if (_isTotalShitShow) {
-                      model.spyCount = Random().nextInt(_playerIndex - 2);
+                      model.spyCount = 1 + Random().nextInt(_playerIndex - 1);
                       model.timeCount = Random().nextInt(20) + 10;
                     } else {
                       model.spyCount = _spyIndex;
                       model.timeCount = _timeIndex;
                     }
 
-                    return PickLocationScreen();
+                    //todo this is temporary - add pick location screen on next version
+                    LocationBundle locBundle = LocationBundle();
+                    locBundle.bundle = Locs.basic;
+                    locBundle.locations = getLocations(Locs.basic);
+
+                    model.locBundle = locBundle;
+
+                    model.location = getRandomLocation(Locs.basic);
+
+                    return RoleDisplayScreen();
+                    //todo change return to PickLocationScreen()
                   },
                   settings: RouteSettings(
                     arguments: model,
                   )));
         },
-        child: getElevationButtonChild('NEXT'),
+        child: getElevationButtonChild('Start Game!'),
       ),
     );
 
+    Widget titleImage = Container(
+      margin: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
+      height: height / 10,
+      width: width,
+      decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage('assets/sama_full.png'))),
+    );
+
+    Widget spaceBox = Visibility(
+        visible: !_isTotalShitShow,
+        child: SizedBox(
+          height: height / 7,
+        ));
+
+    list.add(titleImage);
     list.add(players);
     list.add(spies);
     list.add(time);
     list.add(shitShow);
     list.add(shitShowDescription);
+    list.add(spaceBox);
     list.add(nextButton);
     return list;
   }
